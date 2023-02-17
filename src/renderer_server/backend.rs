@@ -6,7 +6,6 @@ cfg_if::cfg_if! {
     } else if #[cfg(target_os = "macos")] {
         mod multiprocessed;
         pub use multiprocessed::*;
-
     } else {
         mod multithreaded;
         pub use multithreaded::*;

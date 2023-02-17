@@ -1,22 +1,22 @@
 use std::cmp::min;
 use std::collections::HashMap;
 
-use tokio::{sync::mpsc, time};
 use interpolation::lerp;
-use parking_lot::{RwLock, Mutex};
+use parking_lot::{Mutex, RwLock};
+use tokio::{sync::mpsc, time};
 
-use crate::renderer_client::ClientId;
-use crate::ipc_protocol::{ServerSender, RotationDirection, ServerResponse};
+use crate::ipc_protocol::{RotationDirection, ServerResponse, ServerSender};
 use crate::radians::{self, Radians};
+use crate::renderer_client::ClientId;
 use crate::Point;
 
 use super::{
-    handle_handler_result,
-    app::{SharedApp, App, TurtleDrawings, TurtleId},
-    state::TurtleState,
-    renderer::display_list::{DisplayList, SharedDisplayList, PrimHandle},
+    app::{App, SharedApp, TurtleDrawings, TurtleId},
     event_loop_notifier::EventLoopNotifier,
+    handle_handler_result,
     handlers::HandlerError,
+    renderer::display_list::{DisplayList, PrimHandle, SharedDisplayList},
+    state::TurtleState,
 };
 
 /// Frames per second - The number of times the animation will update per second
@@ -59,7 +59,11 @@ struct Animation {
 impl Animation {
     pub fn new(turtle_id: TurtleId, kind: impl Into<AnimationKind>, client_id: ClientId) -> Self {
         let kind = kind.into();
-        Self {turtle_id, kind, client_id}
+        Self {
+            turtle_id,
+            kind,
+            client_id,
+        }
     }
 
     pub fn is_running(&self) -> bool {
@@ -106,12 +110,10 @@ pub struct MoveAnimation {
 }
 
 impl MoveAnimation {
-    pub fn new(
-        turtle: &mut TurtleDrawings,
-        display_list: &mut DisplayList,
-        target_pos: Point,
-    ) -> Self {
-        let TurtleState {position, speed, ref pen, ..} = turtle.state;
+    pub fn new(turtle: &mut TurtleDrawings, display_list: &mut DisplayList, target_pos: Point) -> Self {
+        let TurtleState {
+            position, speed, ref pen, ..
+        } = turtle.state;
 
         let start = time::Instant::now();
 
@@ -122,9 +124,9 @@ impl MoveAnimation {
             turtle.drawings.extend(prim);
 
             // Append to the current fill polygon, if any
-            let fill_poly_index = turtle.current_fill_polygon.map(|poly_handle| {
-                display_list.polygon_push(poly_handle, position)
-            });
+            let fill_poly_index = turtle
+                .current_fill_polygon
+                .map(|poly_handle| display_list.polygon_push(poly_handle, position));
 
             Self {
                 // stop the animation right away since it has already completed
@@ -138,7 +140,6 @@ impl MoveAnimation {
                 prim,
                 fill_poly_index,
             }
-
         } else {
             let px_per_sec = speed.to_px_per_sec();
             let abs_distance = (target_pos - position).len();
@@ -158,9 +159,9 @@ impl MoveAnimation {
             turtle.drawings.extend(prim);
 
             // Append to the current fill polygon, if any
-            let fill_poly_index = turtle.current_fill_polygon.map(|poly_handle| {
-                display_list.polygon_push(poly_handle, position)
-            });
+            let fill_poly_index = turtle
+                .current_fill_polygon
+                .map(|poly_handle| display_list.polygon_push(poly_handle, position));
 
             Self {
                 running: true,
@@ -204,7 +205,6 @@ impl MoveAnimation {
             *next_update = now;
 
             target_pos
-
         } else {
             // t is the total progress made in the animation so far
             let t = elapsed.as_micros() as f64 / total_duration.as_micros() as f64;
@@ -218,12 +218,7 @@ impl MoveAnimation {
         };
     }
 
-    pub fn write_current_state(
-        &self,
-        state: &mut TurtleState,
-        current_fill_polygon: Option<PrimHandle>,
-        display_list: &mut DisplayList,
-    ) {
+    pub fn write_current_state(&self, state: &mut TurtleState, current_fill_polygon: Option<PrimHandle>, display_list: &mut DisplayList) {
         let pos = self.current_pos;
 
         // Update state with the current position
@@ -267,12 +262,8 @@ pub struct RotateAnimation {
 }
 
 impl RotateAnimation {
-    pub fn new(
-        turtle: &mut TurtleDrawings,
-        delta_angle: Radians,
-        direction: RotationDirection,
-    ) -> Self {
-        let TurtleState {heading, speed, ..} = turtle.state;
+    pub fn new(turtle: &mut TurtleDrawings, delta_angle: Radians, direction: RotationDirection) -> Self {
+        let TurtleState { heading, speed, .. } = turtle.state;
 
         let start = time::Instant::now();
 
@@ -291,7 +282,6 @@ impl RotateAnimation {
                 direction,
                 total_duration: time::Duration::from_micros(0),
             }
-
         } else {
             let rad_per_sec = speed.to_rad_per_sec();
             // Use microseconds instead of ms for greater precision
@@ -347,7 +337,6 @@ impl RotateAnimation {
 
             // Set to the final heading
             rotate(start_heading, delta_angle, direction)
-
         } else {
             // t is the total progress made in the animation so far
             let t = elapsed.as_micros() as f64 / total_duration.as_micros() as f64;
@@ -402,23 +391,12 @@ pub struct AnimationRunner {
 }
 
 impl AnimationRunner {
-    pub fn new(
-        conn: ServerSender,
-        app: SharedApp,
-        display_list: SharedDisplayList,
-        event_loop: EventLoopNotifier,
-    ) -> Self {
+    pub fn new(conn: ServerSender, app: SharedApp, display_list: SharedDisplayList, event_loop: EventLoopNotifier) -> Self {
         let (sender, receiver) = mpsc::unbounded_channel();
 
-        tokio::spawn(animation_loop(
-            conn,
-            app,
-            display_list,
-            event_loop,
-            receiver,
-        ));
+        tokio::spawn(animation_loop(conn, app, display_list, event_loop, receiver));
 
-        Self {sender}
+        Self { sender }
     }
 
     pub fn play(&self, turtle_id: TurtleId, kind: impl Into<AnimationKind>, client_id: ClientId) {
@@ -430,7 +408,8 @@ impl AnimationRunner {
     }
 
     fn send(&self, mess: Message) {
-        self.sender.send(mess)
+        self.sender
+            .send(mess)
             .expect("bug: animation runner task should run as long as server task");
     }
 }
@@ -483,7 +462,7 @@ async fn animation_loop(
             },
 
             // Trigger an update once the next update time has elapsed
-            _ = time::delay_until(next_update) => {
+            _ = time::sleep_until(next_update) => {
                 let now = time::Instant::now();
 
                 handle_handler_result(update_animations(
@@ -513,14 +492,8 @@ async fn animation_loop(
 }
 
 /// Compute the time of the next update, returning a value up to the time of the next frame
-fn compute_next_update(
-    next_frame: time::Instant,
-    animations: &HashMap<TurtleId, Animation>,
-) -> time::Instant {
-    let next_update = animations.values()
-        .map(|anim| anim.next_update())
-        .min()
-        .unwrap_or(next_frame);
+fn compute_next_update(next_frame: time::Instant, animations: &HashMap<TurtleId, Animation>) -> time::Instant {
+    let next_update = animations.values().map(|anim| anim.next_update()).min().unwrap_or(next_frame);
 
     min(next_update, next_frame)
 }
@@ -567,17 +540,21 @@ fn update_animations(
         let mut app = app.write();
         let mut display_list = display_list.lock();
         for anim in animations.values_mut() {
-            let TurtleDrawings {state, current_fill_polygon, ..} = app.turtle_mut(anim.turtle_id);
+            let TurtleDrawings {
+                state,
+                current_fill_polygon,
+                ..
+            } = app.turtle_mut(anim.turtle_id);
 
             use AnimationKind::*;
             match &anim.kind {
                 Move(anim) => {
                     anim.write_current_state(state, *current_fill_polygon, &mut display_list);
-                },
+                }
 
                 Rotate(anim) => {
                     anim.write_current_state(state);
-                },
+                }
             }
         }
 

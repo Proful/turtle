@@ -2,10 +2,10 @@ use std::fmt::Debug;
 
 use tokio::time;
 
-use crate::radians::{self, Radians};
 use crate::ipc_protocol::{ProtocolClient, RotationDirection};
+use crate::radians::{self, Radians};
 use crate::renderer_server::TurtleId;
-use crate::{Turtle, Color, Point, Speed};
+use crate::{Color, Point, Speed, Turtle};
 
 /// Any distance value (positive or negative)
 pub type Distance = f64;
@@ -58,8 +58,7 @@ impl AsyncTurtle {
         // of many programs that use the turtle crate.
         crate::start();
 
-        let client = ProtocolClient::new().await
-            .expect("unable to create renderer client");
+        let client = ProtocolClient::new().await.expect("unable to create renderer client");
         Self::with_client(client).await
     }
 
@@ -68,7 +67,7 @@ impl AsyncTurtle {
         let id = client.create_turtle().await;
         let angle_unit = AngleUnit::Degrees;
 
-        Self {client, id, angle_unit}
+        Self { client, id, angle_unit }
     }
 
     pub async fn forward(&mut self, distance: Distance) {
@@ -87,7 +86,9 @@ impl AsyncTurtle {
 
     pub async fn left(&mut self, angle: Angle) {
         let angle = self.angle_unit.to_radians(angle);
-        self.client.rotate_in_place(self.id, angle, RotationDirection::Counterclockwise).await
+        self.client
+            .rotate_in_place(self.id, angle, RotationDirection::Counterclockwise)
+            .await
     }
 
     pub async fn wait(&mut self, secs: f64) {
@@ -98,7 +99,7 @@ impl AsyncTurtle {
             return;
         }
 
-        time::delay_for(time::Duration::from_millis((secs * 1000.0) as u64)).await
+        time::sleep(time::Duration::from_millis((secs * 1000.0) as u64)).await
     }
 
     pub async fn arc_left(&mut self, radius: Distance, extent: Angle) {
@@ -114,12 +115,7 @@ impl AsyncTurtle {
 
     pub async fn arc_right(&mut self, radius: Distance, extent: Angle) {
         self.client
-            .circular_arc(
-                self.id,
-                radius,
-                self.angle_unit.to_radians(extent),
-                RotationDirection::Clockwise,
-            )
+            .circular_arc(self.id, radius, self.angle_unit.to_radians(extent), RotationDirection::Clockwise)
             .await
     }
 
@@ -144,13 +140,13 @@ impl AsyncTurtle {
     }
 
     pub async fn set_x(&mut self, x: f64) {
-        let Point {x: _, y} = self.position().await;
-        self.go_to(Point {x, y}).await
+        let Point { x: _, y } = self.position().await;
+        self.go_to(Point { x, y }).await
     }
 
     pub async fn set_y(&mut self, y: f64) {
-        let Point {x, y: _} = self.position().await;
-        self.go_to(Point {x, y}).await
+        let Point { x, y: _ } = self.position().await;
+        self.go_to(Point { x, y }).await
     }
 
     pub async fn home(&mut self) {
@@ -177,7 +173,9 @@ impl AsyncTurtle {
         // Formula from: https://stackoverflow.com/a/24234924/551904
         let angle = angle - radians::TWO_PI * ((angle + radians::PI) / radians::TWO_PI).floor();
 
-        self.client.rotate_in_place(self.id, angle, RotationDirection::Counterclockwise).await
+        self.client
+            .rotate_in_place(self.id, angle, RotationDirection::Counterclockwise)
+            .await
     }
 
     pub fn is_using_degrees(&self) -> bool {
@@ -313,13 +311,15 @@ impl AsyncTurtle {
             angle
         };
 
-        self.client.rotate_in_place(self.id, angle, RotationDirection::Counterclockwise).await
+        self.client
+            .rotate_in_place(self.id, angle, RotationDirection::Counterclockwise)
+            .await
     }
 
     pub async fn wait_for_click(&mut self) {
         use crate::{
+            event::{MouseButton::LeftButton, PressedState::Pressed},
             Event::MouseButton,
-            event::{PressedState::Pressed, MouseButton::LeftButton},
         };
 
         loop {
