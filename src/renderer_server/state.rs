@@ -1,15 +1,13 @@
 use std::f64::consts::PI;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::{
-    Color,
-    Point,
-    Speed,
+    async_turtle::AngleUnit,
+    colors::{BLACK, WHITE},
     debug,
     radians::Radians,
-    colors::{WHITE, BLACK},
-    async_turtle::AngleUnit,
+    Color, Point, Speed,
 };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -25,7 +23,7 @@ pub struct DrawingState {
 
 impl DrawingState {
     pub const DEFAULT_TITLE: &'static str = "Turtle";
-    pub const DEFAULT_BACKGROUND: Color = WHITE;
+    pub const DEFAULT_BACKGROUND: Color = BLACK;
     pub const DEFAULT_CENTER: Point = Point::origin();
     pub const DEFAULT_WIDTH: u32 = 800;
     pub const DEFAULT_HEIGHT: u32 = 600;
@@ -141,7 +139,7 @@ pub struct Pen {
 impl Pen {
     pub const DEFAULT_IS_ENABLED: bool = true;
     pub const DEFAULT_THICKNESS: f64 = 1.0;
-    pub const DEFAULT_COLOR: Color = BLACK;
+    pub const DEFAULT_COLOR: Color = WHITE;
 }
 
 impl Default for Pen {

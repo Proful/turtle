@@ -1,6 +1,6 @@
 use std::env;
 use std::io;
-use std::process::{self, ExitStatus, Stdio};
+use std::process::{self, Stdio};
 
 use futures_util::future::{FutureExt, RemoteHandle};
 use tokio::{
