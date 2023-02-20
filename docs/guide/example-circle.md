@@ -19,13 +19,13 @@ To demonstrate this, let's look at a program that draws the following 90&deg;
 arc. This arc covers one quarter of 360&deg;, so this is often called a "quarter
 arc".
 
-![turtle 90 degree arc]({% link assets/images/guide/example-circle/arc.png %}){: .figborder .figlimitsize}
+![turtle 90 degree arc](../assets/images/guide/example-circle/arc.png)
 
 To figure out how to draw this quarter arc, let's look at the differences
 between the start position of the turtle (shown below) and the image we're
 trying to create above.
 
-![turtle initial]({% link assets/images/guide/example-circle/initial-turtle.png %}){: .figborder .figlimitsize}
+![turtle initial](../assets/images/guide/example-circle/initial-turtle.png)
 
 Notice that the turtle appears to go from facing the top of the window to facing
 the right. It has moved along a quarter of a circle to get there. The program to
@@ -57,7 +57,7 @@ so that we still reach 90&deg; by the time we're done iterating.
 Here's the drawing that gets created with 3 iterations of the turtle drawing a
 line for 90 steps and turning 30&deg; after each line.
 
-![turtle 3 line arc]({% link assets/images/guide/example-circle/arc-3-lines.png %}){: .figborder .figlimitsize}
+![turtle 3 line arc](../assets/images/guide/example-circle/arc-3-lines.png)
 
 This is the code that generates this image:
 
@@ -79,7 +79,7 @@ You can see that we're still turning the turtle 90&deg; in total, but the
 curve doesn't exactly follow the same circular arc we were getting before. To
 improve this, let's try 5 iterations with an 18&deg; turn every time:
 
-![turtle 5 line arc]({% link assets/images/guide/example-circle/arc-5-lines.png %}){: .figborder .figlimitsize}
+![turtle 5 line arc](../assets/images/guide/example-circle/arc-5-lines.png)
 
 Here's the code that generates that image:
 
@@ -100,7 +100,7 @@ fn main() {
 This gets us a little closer! If we increase it to 9 iterations with a 10&deg;
 turn, we get the following image:
 
-![turtle 9 line arc]({% link assets/images/guide/example-circle/arc-9-lines.png %}){: .figborder .figlimitsize}
+![turtle 9 line arc](../assets/images/guide/example-circle/arc-9-lines.png)
 
 The code for this image:
 
@@ -122,7 +122,7 @@ At this point, it's almost indistinguishable. However, if you look close enough,
 you can still tell that there are 9 individual lines being drawn here. We can
 make the curve even smoother using 18 iterations with a 5&deg; turn every time:
 
-![turtle 18 line arc]({% link assets/images/guide/example-circle/arc-18-lines.png %}){: .figborder .figlimitsize}
+![turtle 18 line arc](../assets/images/guide/example-circle/arc-18-lines.png)
 
 The code for this image:
 
@@ -144,7 +144,7 @@ With this many iterations, we get pretty close. Just to illustrate how much of
 a difference each increase in iterations makes, here's a GIF that shows us
 getting closer and closer to the final quarter arc:
 
-![turtle arc progression gif]({% link assets/images/guide/example-circle/arc-lines.gif %}){: .figborder .figlimitsize}
+![turtle arc progression gif](../assets/images/guide/example-circle/arc-lines.gif)
 
 The number of iterations you need for your own drawings will depend on the size
 of the arc you are creating. To be safe, you can draw the most reliable and
@@ -166,7 +166,7 @@ fn main() {
 This is the same program from above that gets us the 90&deg; arc we initially
 set out to create.
 
-![turtle 90 degree arc]({% link assets/images/guide/example-circle/arc.png %}){: .figborder .figlimitsize}
+![turtle 90 degree arc](../assets/images/guide/example-circle/arc.png)
 
 ## Drawing Circles
 
@@ -218,7 +218,7 @@ fn main() {
 
 This produces the complete circle shown below:
 
-![turtle circle]({% link assets/images/guide/example-circle/circle.png %}){: .figborder .figlimitsize}
+![turtle circle](../assets/images/guide/example-circle/circle.png)
 
 ## Exercises
 
@@ -230,7 +230,7 @@ If you need help, see the [Getting Help] section of the guide.
 
 * **Exercise 1: `(*)`** Instead of drawing the circle on the right half of the
   window, draw it on the left half.
-  ![turtle circle left]({% link assets/images/guide/example-circle/exercise-circle-left.png %}){: .figborder .figlimitsize}
+  ![turtle circle left]({% link assets/images/guide/example-circle/exercise-circle-left.png %})
 * **Exercise 2: `(*)`** Change the radius of circle to a different value. What
   changes do you need to make for the circle to get bigger or smaller?
 * **Exercise 4: `(*)`** Change angle in the final program to a value bigger and
@@ -240,11 +240,11 @@ If you need help, see the [Getting Help] section of the guide.
   forwards.<br>
   **Hint:** [Basic Movement] mentions two ways to go backwards.
 * **Exercise 6: `(**)`** Draw two circles side by side centered within the window.
-  ![turtle two circles]({% link assets/images/guide/example-circle/exercise-double-circle.png %}){: .figborder .figlimitsize}
+  ![turtle two circles]({% link assets/images/guide/example-circle/exercise-double-circle.png %})
 * **Exercise 7: `(**)`** Draw half of the circle on the left side of the screen
   and the other half on the right side of the screen. This forms a curve that
   resembles the letter "s".
-  ![turtle s-curve]({% link assets/images/guide/example-circle/exercise-s-curve.png %}){: .figborder .figlimitsize}
+  ![turtle s-curve]({% link assets/images/guide/example-circle/exercise-s-curve.png %})
   **Hint:** To get back to the original position of the turtle, you can draw over
   the line you just drew.<br>
   **Bonus:** For an extra challenge, look up the [`pen_up`], [`pen_down`], and
@@ -252,15 +252,15 @@ If you need help, see the [Getting Help] section of the guide.
   back to the center without drawing a line.
 * **Exercise 8: `(***)`** Draw a flower using the s-curves from the previous
   exercise.
-  ![turtle s-curve flower]({% link assets/images/guide/example-circle/exercise-s-curve-flower.png %}){: .figborder .figlimitsize}
+  ![turtle s-curve flower]({% link assets/images/guide/example-circle/exercise-s-curve-flower.png %})
   **Tip:** Use a smaller circle radius if you want to match this image exactly.
 * **Exercise 9: `(***)`** Draw a flower with circular petals and a stem
-  ![turtle circular flower]({% link assets/images/guide/example-circle/exercise-circular-flower.png %}){: .figborder .figlimitsize}
+  ![turtle circular flower]({% link assets/images/guide/example-circle/exercise-circular-flower.png %})
   **Tip:** Use a smaller circle radius if you want to match this image exactly.<br>
   **Bonus:** Color the flower with [`begin_fill`] and [`end_fill`]. Make the stem thicker using [`set_pen_size`].
 * **Exercise 10: `(***)`** Draw a circle with a dashed line instead of the single
   solid line used so far.
-  ![turtle dashed circle]({% link assets/images/guide/example-circle/exercise-dashed-circle.png %}){: .figborder .figlimitsize}
+  ![turtle dashed circle]({% link assets/images/guide/example-circle/exercise-dashed-circle.png %})
   **Hint:** Use [`pen_up`] and [`pen_down`].<br>
   **Hint:** The loop variable in the code from this lesson was ignored using `_`.
   If you make that into a proper variable (e.g. `i`), you can use it to decide
